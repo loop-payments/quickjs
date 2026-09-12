@@ -1,12 +1,13 @@
 {
-	"name": "@sebastianwessel/quickjs",
+	"name": "@loop-payments/quickjs",
 	"version": "3.1.0",
 	"description": "A typescript package to execute JavaScript and TypeScript code in a WebAssembly QuickJS sandbox",
 	"engines": {
 		"node": ">=18.0.0"
 	},
 	"publishConfig": {
-		"access": "public"
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
 	},
 	"keywords": [
 		"typescript",
@@ -53,7 +54,6 @@
 		"test:dev": "bun test --watch",
 		"lint": "bunx @biomejs/biome check",
 		"lint:fix": "bunx @biomejs/biome check --write",
-		"postpublish": "npx jsr publish",
 		"example:ai": "bun example/ai/index.ts",
 		"example:async": "bun example/async/index.ts",
 		"example:basic": "bun example/basic/index.ts",
@@ -65,7 +65,6 @@
 		"example:module": "bun example/custom-module/index.ts",
 		"example:user": "bun example/user-code/index.ts",
 		"knip": "knip",
-		"release": "bun run build && bun run lint:fix && np",
 		"docs:dev": "vitepress dev website",
 		"docs:build": "git-cliff > CHANGELOG.md && typedoc --options typedoc.json && vitepress build website",
 		"docs:preview": "vitepress preview website"
@@ -74,13 +73,13 @@
 		"name": "Sebastian Wessel",
 		"url": "https://sebastianwessel.de"
 	},
-	"homepage": "https://github.com/sebastianwessel/quickjs#readme",
+	"homepage": "https://github.com/loop-payments/quickjs#readme",
 	"bugs": {
-		"url": "https://github.com/sebastianwessel/quickjs/issues"
+		"url": "https://github.com/loop-payments/quickjs/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/sebastianwessel/quickjs.git"
+		"url": "git+https://github.com/loop-payments/quickjs.git"
 	},
 	"license": "MIT",
 	"devDependencies": {
