@@ -43,7 +43,7 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Build the test utilities
+      - name: Generate the vendored modules
         run: bun run build:vendor
 
       - name: Typecheck

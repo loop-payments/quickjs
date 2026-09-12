@@ -8,6 +8,7 @@
 			"!**/node_modules",
 			"!**/.tshy",
 			"!**/build",
+			"!**/src/modules/generated",
 			"!**/cookieconsent2.js",
 			"!**/cache",
 			"!**/cookieconsent-init2.js",

@@ -12,6 +12,7 @@ This TypeScript package allows you to safely execute **JavaScript AND TypeScript
 - **Custom Node Modules**: Custom node modules are mountable.
 - **Fetch Client**: Can provide a fetch client to make http(s) calls.
 - **Test-Runner**: Includes a test runner and chai based `expect`.
+- **Decimal numbers**: Ships decimal.js. The guest imports it, or gets the class `Decimal` as a global.
 - **Performance**: Benefit from the lightweight and efficient QuickJS engine.
 - **Versatility**: Easily integrate with existing TypeScript projects.
 - **Simplicity**: User-friendly API for executing and managing JavaScript and TypeScript code in the sandbox.
@@ -74,6 +75,7 @@ This lib is based on:
 - [quickjs-emscripten-sync](https://github.com/reearth/quickjs-emscripten-sync)
 - [memfs](https://github.com/streamich/memfs)
 - [Chai](https://www.chaijs.com)
+- [decimal.js](https://mikemcl.github.io/decimal.js/)
 
 Tools used:
 

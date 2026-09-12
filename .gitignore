@@ -137,3 +137,5 @@ src/modules/build
 
 website/.vitepress/cache
 docs
+
+src/modules/generated

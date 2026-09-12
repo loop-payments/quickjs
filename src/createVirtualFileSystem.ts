@@ -8,6 +8,7 @@ import bufferModule from './modules/buffer.js'
 import eventModule from './modules/events.js'
 import fsModule from './modules/fs.js'
 import fsPromisesModule from './modules/fs_promises.js'
+import decimalModule from './modules/generated/decimal.js'
 import moduleModule from './modules/module.js'
 import compatibilityEventTarget from './modules/nodeCompatibility/eventTarget.js'
 import compatibilityHeaders from './modules/nodeCompatibility/headers.js'
@@ -68,7 +69,11 @@ export const createVirtualFileSystem = (runtimeOptions: RuntimeOptions = {}) => 
 				assert: {
 					'index.js': assertModule,
 				},
-
+				// The package decimal.js is not a node module. The sandbox mounts it
+				// always, because the host code works with decimal strings.
+				'decimal.js': {
+					'index.js': decimalModule,
+				},
 				async_hooks: {
 					'index.js': "throw new Error('module async_hooks not implemented')",
 				},
