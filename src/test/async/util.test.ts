@@ -92,4 +92,95 @@ describe('async - node:util - base', () => {
 		expect(result.ok).toBeTrue()
 		expect((result as OkResponse).data).toBe('Test passed')
 	})
+
+	describe('TextDecoder', () => {
+		const decode = async (setup: string, argument: string) => {
+			const result = await runtime.runSandboxed(async ({ evalCode }) => {
+				return await evalCode(`
+					${setup}
+					export default new TextDecoder().decode(${argument})
+				`)
+			})
+			expect(result.ok).toBeTrue()
+			return (result as OkResponse).data
+		}
+
+		const decodeError = async (argument: string) => {
+			const result = await runtime.runSandboxed(async ({ evalCode }) => {
+				return await evalCode(`
+					let outcome = 'the decode call did not throw'
+					try {
+						new TextDecoder().decode(${argument})
+					} catch (error) {
+						outcome = error.constructor.name + ': ' + error.message
+					}
+					export default outcome
+				`)
+			})
+			expect(result.ok).toBeTrue()
+			return (result as OkResponse).data
+		}
+
+		const helloWorld = "const bytes = new TextEncoder().encode('hello world')"
+
+		it('decodes an ArrayBuffer', async () => {
+			expect(await decode(helloWorld, 'bytes.buffer')).toBe('hello world')
+		})
+
+		it('decodes a DataView', async () => {
+			expect(await decode(helloWorld, 'new DataView(bytes.buffer)')).toBe('hello world')
+		})
+
+		it('decodes a Uint8Array', async () => {
+			expect(await decode(helloWorld, 'bytes')).toBe('hello world')
+		})
+
+		it('decodes a view that starts at a byte offset', async () => {
+			expect(await decode(helloWorld, 'new Uint8Array(bytes.buffer, 6)')).toBe('world')
+		})
+
+		it('decodes a view that has a shorter byte length', async () => {
+			expect(await decode(helloWorld, 'new Uint8Array(bytes.buffer, 0, 5)')).toBe('hello')
+		})
+
+		it('decodes a view that has signed elements', async () => {
+			const setup = "const bytes = new TextEncoder().encode('héllo')"
+			expect(await decode(setup, 'new Int8Array(bytes.buffer)')).toBe('héllo')
+		})
+
+		it('decodes multibyte characters from an ArrayBuffer', async () => {
+			const setup = "const bytes = new TextEncoder().encode('héllo 🌍')"
+			expect(await decode(setup, 'bytes.buffer')).toBe('héllo 🌍')
+		})
+
+		it('returns an empty string for no argument', async () => {
+			expect(await decode('', '')).toBe('')
+		})
+
+		it('returns an empty string for an empty ArrayBuffer', async () => {
+			expect(await decode('', 'new ArrayBuffer(0)')).toBe('')
+		})
+
+		it('decodes a payload that is larger than one internal chunk', async () => {
+			const result = await runtime.runSandboxed(async ({ evalCode }) => {
+				return await evalCode(`
+					let source = ''
+					while (source.length < 100000) source += 'héllo 🌍 world '
+					const bytes = new TextEncoder().encode(source)
+					const decoded = new TextDecoder().decode(bytes.buffer)
+					export default decoded === source ? 'match' : 'mismatch at length ' + decoded.length
+				`)
+			})
+			expect(result.ok).toBeTrue()
+			expect((result as OkResponse).data).toBe('match')
+		})
+
+		it('throws a TypeError for a string', async () => {
+			expect(await decodeError("'hello world'")).toStartWith('TypeError')
+		})
+
+		it('throws a TypeError for null', async () => {
+			expect(await decodeError('null')).toStartWith('TypeError')
+		})
+	})
 })

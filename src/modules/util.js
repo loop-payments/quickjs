@@ -13,6 +13,32 @@ class TextEncoder {
     }
 }
 
+// The engine limits the number of arguments for one function call. The
+// decoder sends the bytes in chunks of this size to stay under the limit.
+const DECODE_CHUNK_SIZE = 8192;
+
+// The WHATWG encoding standard defines the decoder input as a BufferSource. A
+// BufferSource is an ArrayBuffer or a view on an ArrayBuffer. The decoder
+// reads the bytes through a Uint8Array. An ArrayBuffer has no index access,
+// and a signed view returns negative numbers.
+function toUint8Array(input) {
+    if (input === undefined) {
+        return new Uint8Array();
+    }
+    if (input instanceof Uint8Array) {
+        return input;
+    }
+    if (ArrayBuffer.isView(input)) {
+        // The new array must keep the offset and the length of the input
+        // view. An array over the full buffer decodes the wrong bytes.
+        return new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+    }
+    if (input instanceof ArrayBuffer) {
+        return new Uint8Array(input);
+    }
+    throw new TypeError('TextDecoder.decode accepts an ArrayBuffer or a view on an ArrayBuffer');
+}
+
 class TextDecoder {
     constructor(encoding = 'utf-8') {
         if (encoding !== 'utf-8') {
@@ -20,12 +46,16 @@ class TextDecoder {
         }
     }
 
-    decode(input = new Uint8Array()) {
-        let str = '';
-        for (let i = 0; i < input.length; i++) {
-          str += String.fromCharCode(input[i]);
+    decode(input) {
+        const bytes = toUint8Array(input);
+        // One call to String.fromCharCode per chunk is much faster than one
+        // call per byte. A chunk that splits a multibyte sequence is safe,
+        // because decodeURIComponent reads the full string.
+        let latin1 = '';
+        for (let i = 0; i < bytes.length; i += DECODE_CHUNK_SIZE) {
+          latin1 += String.fromCharCode.apply(null, bytes.subarray(i, i + DECODE_CHUNK_SIZE));
         }
-        return decodeURIComponent(escape(str));
+        return decodeURIComponent(escape(latin1));
     }
 }
 
