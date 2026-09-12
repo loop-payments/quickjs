@@ -1,6 +1,6 @@
 {
 	"name": "@loop-payments/quickjs",
-	"version": "3.1.0",
+	"version": "3.2.0",
 	"description": "A typescript package to execute JavaScript and TypeScript code in a WebAssembly QuickJS sandbox",
 	"engines": {
 		"node": ">=18.0.0"
@@ -41,7 +41,8 @@
 		],
 		"exports": {
 			"./package.json": "./package.json",
-			".": "./src/index.ts"
+			".": "./src/index.ts",
+			"./decimal-source": "./src/modules/generated/decimal.js"
 		}
 	},
 	"type": "module",
@@ -93,6 +94,7 @@
 		"@types/node": "^25.9.1",
 		"autocannon": "^8.0.0",
 		"chai": "^6.2.2",
+		"decimal.js": "^10.6.0",
 		"git-cliff": "^2.13.1",
 		"hono": "^4.12.23",
 		"jsr": "^0.14.3",
@@ -131,6 +133,16 @@
 			"require": {
 				"types": "./dist/commonjs/index.d.ts",
 				"default": "./dist/commonjs/index.js"
+			}
+		},
+		"./decimal-source": {
+			"import": {
+				"types": "./dist/esm/modules/generated/decimal.d.ts",
+				"default": "./dist/esm/modules/generated/decimal.js"
+			},
+			"require": {
+				"types": "./dist/commonjs/modules/generated/decimal.d.ts",
+				"default": "./dist/commonjs/modules/generated/decimal.js"
 			}
 		}
 	},

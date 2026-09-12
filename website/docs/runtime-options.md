@@ -46,6 +46,22 @@ These options apply to both synchronous and asynchronous sandbox instances.
 | ----------------- | --------- | ------------------------------------------- |
 | `enableTestUtils` | `boolean` | Enables test frameworks (`chai` & `mocha`). |
 
+### 🔢 Decimal Numbers
+
+The sandbox always mounts the package [decimal.js](https://mikemcl.github.io/decimal.js/). The guest code imports it with `import Decimal from 'decimal.js'`. The sandbox only compiles the source when the guest code imports the module.
+
+| Option                | Type      | Description                                                            |
+| --------------------- | --------- | ---------------------------------------------------------------------- |
+| `enableDecimalGlobal` | `boolean` | Registers the class `Decimal` as a global. The guest needs no import.  |
+
+The package also exports the source of decimal.js as a string:
+
+```ts
+import decimalJsSource from '@loop-payments/quickjs/decimal-source'
+```
+
+Use this export when you embed the QuickJS engine yourself and you must give the same `Decimal` class to the guest. The subpath holds one string constant and imports nothing else, so a bundler does not pull the sandbox and the module memfs into the output. The host also does not read a file at runtime. A bundler, a worker thread, and the Temporal workflow vm all support this.
+
 ### 📢 Console Customization
 
 You can override console methods for custom logging behavior.

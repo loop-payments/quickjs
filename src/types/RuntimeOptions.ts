@@ -32,6 +32,14 @@ export type RuntimeOptions = {
 	 */
 	fetchAdapter?: typeof fetch
 	/**
+	 * Register the class Decimal from the package decimal.js as a global.
+	 * The module decimal.js is always available for import. This option only
+	 * makes the import unnecessary.
+	 * The sandbox compiles the source of decimal.js for every execution when
+	 * this option is enabled.
+	 */
+	enableDecimalGlobal?: boolean
+	/**
 	 * Includes test framework
 	 * If enabled, the packages chai and mocha become available
 	 * They are registered global

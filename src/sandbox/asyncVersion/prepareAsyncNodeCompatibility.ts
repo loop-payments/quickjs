@@ -13,6 +13,7 @@ export const prepareAsyncNodeCompatibility = async (vm: QuickJSAsyncContext, san
       import '@node_compatibility/request';
       import '@node_compatibility/response';
       ${sandboxOptions.enableTestUtils ? "import 'test'" : ''}
+      ${sandboxOptions.enableDecimalGlobal ? "import Decimal from 'decimal.js'; globalThis.Decimal = Decimal;" : ''}
       `,
 			undefined,
 			{ type: 'module' },
